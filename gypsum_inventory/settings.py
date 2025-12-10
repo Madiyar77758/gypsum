@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@51_w4dmbscg)m^qztdl-iu*@d&bj-s01w2fvb!!!l1fwx!_!f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 
@@ -151,6 +151,8 @@ STATIC_URL = 'static/'
 import os
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 HOST_URL = os.getenv('HOST_URL', 'http://127.0.0.1:8000')
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
