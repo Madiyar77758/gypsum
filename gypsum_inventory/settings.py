@@ -151,6 +151,9 @@ STATIC_URL = 'static/'
 import os
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 HOST_URL = os.getenv('HOST_URL', 'http://127.0.0.1:8000')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://gypsum-4.onrender.com').split(',')
+
+
 
 
 MEDIA_URL = '/media/'
