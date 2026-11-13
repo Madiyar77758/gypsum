@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@51_w4dmbscg)m^qztdl-iu*@d&bj-s01w2fvb!!!l1fwx!_!f'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-only-insecure-key-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', '1') == '1'
 
 
 
@@ -81,8 +82,9 @@ DATABASES = {
     }
 }
 
-TELEGRAM_BOT_TOKEN = '8329428347:AAGykJ_dmnRkICyNJkUlnMJ8b0Z6VOx7uNg'
-TELEGRAM_CHAT_ID = '5725971435'
+# Order notifications to Telegram. Leave empty to disable.
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
 
 
 # Password validation
@@ -106,8 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # settings.py
 
 PAYPAL_MODE = 'Sandbox'  # sandbox или live в зависимости от режима
-PAYPAL_CLIENT_ID = 'AVGz4OyIjxZDdReytcgxiTKFL0cKZbWA7T6Co8LrjglySWI3WziAyeybd59TenaVzKQrerSOWlnA9dfg'
-PAYPAL_CLIENT_SECRET = 'ELNFZEL56E0XmJYbz_eZoQKH5rNZCP2bnsqoe6S-hYMtXfS96lPfY7EBzHUPhj37hkPIJOH99dLEjuBe'
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID', '')
+PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET', '')
 
 
 
@@ -117,11 +119,11 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "elmuratovmadiyar87@gmail.com"
-EMAIL_HOST_PASSWORD = "xgcf iyil hpsp xiae"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SUPPORT_EMAIL = EMAIL_HOST_USER   # письма будут приходить на этот же адрес
+SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", EMAIL_HOST_USER)  # where contact-form messages go
 
 
 
@@ -144,8 +146,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-# В settings.py
-import os
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 HOST_URL = os.getenv("HOST_URL", "https://gypsum-4.onrender.com")
 

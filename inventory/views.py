@@ -8,11 +8,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 import asyncio
+import logging
 import telegram
 import paypalrestsdk
 
 from .forms import ContactForm, OrderForm, PublicOrderForm
 from .models import Order, Product, Warehouse
+
+logger = logging.getLogger(__name__)
 
 # Django Auth
 from django.contrib.auth import authenticate, login, logout
@@ -23,6 +26,8 @@ from django.contrib.auth.models import User
 #  Telegram — асинхронная отправка заказов
 # --------------------------------------------------------------------------
 async def send_telegram_message(order):
+    if not (settings.TELEGRAM_BOT_TOKEN and settings.TELEGRAM_CHAT_ID):
+        return  # notifications are optional: configured via environment variables
     bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
     chat_id = settings.TELEGRAM_CHAT_ID
 
@@ -79,8 +84,11 @@ def create_order(request):
 
             order.save()
 
-            # Telegram async
-            asyncio.run(send_telegram_message(order))
+            # Telegram notification (best effort: an outage must not lose the order)
+            try:
+                asyncio.run(send_telegram_message(order))
+            except Exception:
+                logger.exception("Telegram notification failed for order %s", order.pk)
 
             messages.success(request, f"Заказ №{order.pk} оформлен!")
             return redirect("order_success", order_id=order.pk)
